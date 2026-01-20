@@ -1,8 +1,8 @@
 package com.synctalk.security.jwt;
 
+import com.synctalk.security.auth.AppUserDetailsService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -26,9 +26,10 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final AppUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         try {
             String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
@@ -41,9 +42,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
 
                 String username = claims.getSubject();
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
                 var authentication = new UsernamePasswordAuthenticationToken(
-                        username,
+                        userDetails,
                         null,
                         List.of(new SimpleGrantedAuthority("ROLE_USER"))
                 );
