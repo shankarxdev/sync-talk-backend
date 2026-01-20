@@ -1,0 +1,28 @@
+package com.synctalk.persistance.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * Author: Shankar Chakraborty
+ * Date: 2026-01-20
+ * Time: 10:51 a.m.
+ */
+
+
+@Entity
+@Table(name = "groups")
+@Getter
+@Setter
+public class GroupEntity {
+
+    @Id
+    private String id;
+
+    private String name;
+    private String createdBy;
+    private String createAt;
+}
