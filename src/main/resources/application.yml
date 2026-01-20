@@ -23,5 +23,11 @@ spring:
     baseline-on-migrate: true
     clean-disabled: true
 
+app:
+  jwt:
+    secret: 121751258312873681
+    access-ttl-seconds: 3600
+    refresh-ttl-seconds: 1209600 # 14 Days
+
 server:
   port: 18081
