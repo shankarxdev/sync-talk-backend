@@ -1,10 +1,12 @@
-package com.synctalk.persistance.entity;
+package com.synctalk.persistence.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.Instant;
 
 /**
  * Author: Shankar Chakraborty
@@ -24,5 +26,5 @@ public class GroupEntity {
 
     private String name;
     private String createdBy;
-    private String createAt;
+    private Instant createdAt;
 }

@@ -1,6 +1,6 @@
-package com.synctalk.persistance.repository;
+package com.synctalk.persistence.repository;
 
-import com.synctalk.persistance.entity.RefreshTokenEntity;
+import com.synctalk.persistence.entity.RefreshTokenEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.synctalk.common.utils;
+package com.synctalk.common.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,8 @@
 package com.synctalk.security.auth;
 
 import com.synctalk.common.exception.UnauthorizedException;
-import com.synctalk.persistance.entity.UserEntity;
-import com.synctalk.persistance.repository.UserRepository;
+import com.synctalk.persistence.entity.UserEntity;
+import com.synctalk.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

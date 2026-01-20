@@ -1,4 +1,4 @@
-package com.synctalk.persistance.entity;
+package com.synctalk.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,23 +9,23 @@ import java.time.Instant;
 /**
  * Author: Shankar Chakraborty
  * Date: 2026-01-20
- * Time: 10:54 a.m.
+ * Time: 11:05 a.m.
  */
 
 @Entity
-@Table(name = "group_members",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"group_id", "user_id"}))
+@Table(name = "chat_messages")
 @Getter
 @Setter
-public class GroupMemberEntity {
+public class ChatMessageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String groupId;
-    private String userId;
-    private String role;
-    private Instant joinedAt;
+    private String senderUserId;
+
+    @Column(columnDefinition = "text")
+    private String content;
+    private Instant sentAt;
 }

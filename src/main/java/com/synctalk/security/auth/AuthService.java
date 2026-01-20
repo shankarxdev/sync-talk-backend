@@ -1,16 +1,19 @@
 package com.synctalk.security.auth;
 
 import com.synctalk.common.exception.UnauthorizedException;
-import com.synctalk.common.utils.HashUtils;
-import com.synctalk.persistance.entity.RefreshTokenEntity;
-import com.synctalk.persistance.entity.UserEntity;
-import com.synctalk.persistance.repository.RefreshTokenRepository;
-import com.synctalk.persistance.repository.UserRepository;
+import com.synctalk.common.util.HashUtils;
+import com.synctalk.persistence.entity.RefreshTokenEntity;
+import com.synctalk.persistence.entity.UserEntity;
+import com.synctalk.persistence.repository.RefreshTokenRepository;
+import com.synctalk.persistence.repository.UserRepository;
 import com.synctalk.security.jwt.JwtService;
 import com.synctalk.security.jwt.JwtTokenType;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
 
     @Transactional
@@ -54,10 +58,21 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenResponse login(LoginRequest request, AppUserDetails userDetails) {
+    public TokenResponse login(LoginRequest request) {
 
-        UserEntity user = userDetails.getUser();
-        return issueAndStoreToken(user);
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.username(),
+                            request.password()
+                    )
+            );
+
+            AppUserDetails principal = (AppUserDetails) auth.getPrincipal();
+            return issueAndStoreToken(principal.user());
+        } catch (Exception e) {
+            throw new UnauthorizedException("Invalid username or password");
+        }
     }
 
     @Transactional
@@ -88,6 +103,7 @@ public class AuthService {
         }
 
         storedRefreshToken.setRevoked(true); // rotation
+        refreshTokenRepository.save(storedRefreshToken);
 
         return issueAndStoreToken(user);
     }

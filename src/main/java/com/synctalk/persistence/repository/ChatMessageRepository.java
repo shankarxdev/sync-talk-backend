@@ -1,6 +1,6 @@
-package com.synctalk.persistance.repository;
+package com.synctalk.persistence.repository;
 
-import com.synctalk.persistance.entity.ChatMessageEntity;
+import com.synctalk.persistence.entity.ChatMessageEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

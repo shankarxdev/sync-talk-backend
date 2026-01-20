@@ -1,9 +1,7 @@
 package com.synctalk.security.auth;
 
-import com.synctalk.persistance.entity.UserEntity;
+import com.synctalk.persistence.entity.UserEntity;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,13 +17,9 @@ import java.util.List;
  * Time: 2:00 p.m.
  */
 
-@Getter
-@Setter
-@Builder
-@RequiredArgsConstructor
-public class AppUserDetails implements UserDetails {
 
-    private final UserEntity user;
+@Builder
+public record AppUserDetails(UserEntity user) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

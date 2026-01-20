@@ -9,12 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.util.List;
 
 /**
  * Author: Shankar Chakraborty
@@ -22,6 +21,7 @@ import java.util.List;
  * Time: 2:09 p.m.
  */
 
+@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -34,23 +34,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
             if (header != null && header.startsWith("Bearer ")) {
-                String token = header.substring("Bearer ".length());
-                Claims claims = jwtService.parse(token);
+                try {
+                    String token = header.substring("Bearer ".length());
+                    Claims claims = jwtService.parse(token);
 
-                if (jwtService.getTokenType(claims) != JwtTokenType.ACCESS) {
-                    throw new IllegalArgumentException("Refresh token now allowed for APIs");
+                    if (jwtService.getTokenType(claims) != JwtTokenType.ACCESS) {
+                        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                        return;
+                    }
+
+                    String username = claims.getSubject();
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                    var authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } catch (Exception ex) {
+                    SecurityContextHolder.clearContext();
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    return;
                 }
-
-                String username = claims.getSubject();
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                var authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_USER"))
-                );
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
             filterChain.doFilter(request, response);

@@ -25,7 +25,7 @@ spring:
 
 app:
   jwt:
-    secret: 121751258312873681
+    secret: aE227piBGcJkllZWu1LxleJtHoG0zUZPV4H4QlSddbX
     access-ttl-seconds: 3600
     refresh-ttl-seconds: 1209600 # 14 Days
 

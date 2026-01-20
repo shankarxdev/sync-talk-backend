@@ -1,4 +1,4 @@
-package com.synctalk.persistance.entity;
+package com.synctalk.persistence.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

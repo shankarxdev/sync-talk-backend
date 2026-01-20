@@ -1,6 +1,6 @@
-package com.synctalk.persistance.repository;
+package com.synctalk.persistence.repository;
 
-import com.synctalk.persistance.entity.GroupMemberEntity;
+import com.synctalk.persistence.entity.GroupMemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

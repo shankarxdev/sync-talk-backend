@@ -10,12 +10,12 @@
 <h2>WebSocket Chat Test</h2>
 
 <div>
-    <input id="username" placeholder="Your name" />
+    <input id="username" placeholder="Your name"/>
     <button onclick="connect()">Connect</button>
 </div>
 
 <div style="margin-top: 20px;">
-    <input id="message" placeholder="Type a message" />
+    <input id="message" placeholder="Type a message"/>
     <button onclick="sendMessage()">Send</button>
 </div>
 
@@ -36,11 +36,11 @@
         const socket = new SockJS('http://localhost:18081/ws'); // your backend URL
         stompClient = Stomp.over(socket);
 
-        stompClient.connect({}, function(frame) {
+        stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
 
             // Subscribe to topic
-            stompClient.subscribe('/topic/public', function(message) {
+            stompClient.subscribe('/topic/public', function (message) {
                 const msg = JSON.parse(message.body);
                 const chat = document.getElementById('chat');
                 chat.innerHTML += `<p><strong>${msg.sender}:</strong> ${msg.content}</p>`;
