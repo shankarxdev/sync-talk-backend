@@ -2,7 +2,6 @@ package com.synctalk.security.auth;
 
 import com.synctalk.persistence.entity.UserEntity;
 import lombok.Builder;
-import lombok.Setter;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

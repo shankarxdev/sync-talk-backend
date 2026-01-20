@@ -70,7 +70,7 @@ public class AuthService {
 
             AppUserDetails principal = (AppUserDetails) auth.getPrincipal();
             return issueAndStoreToken(principal.user());
-        } catch (Exception e) {
+        } catch (Exception ex) {
             throw new UnauthorizedException("Invalid username or password");
         }
     }
