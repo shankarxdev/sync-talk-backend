@@ -54,7 +54,7 @@ public class AuthService {
                 .id(UUID.randomUUID().toString())
                 .username(request.username())
                 .passwordHash(passwordEncoder.encode(request.password()))
-                .email(request.email())
+                .email(normalizeEmail(request.email()))
                 .displayName(request.displayName())
                 .avatarUrl(request.avatarUrl())
                 .createdAt(Instant.now())
@@ -137,6 +137,13 @@ public class AuthService {
                 .build());
 
         return new TokenResponse(accessToken, refreshToken);
+    }
+
+
+    private String normalizeEmail(String email) {
+        if (email == null) return null;
+        String e = email.trim().toLowerCase();
+        return e.isEmpty() ? null : e;
     }
 
 }
