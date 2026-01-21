@@ -46,6 +46,10 @@ public class AuthService {
             throw new UnauthorizedException("Username already taken");
         }
 
+        if (userRepository.existsByEmail(request.email())) {
+            throw new UnauthorizedException("Email already taken");
+        }
+
         userRepository.save(UserEntity.builder()
                 .id(UUID.randomUUID().toString())
                 .username(request.username())

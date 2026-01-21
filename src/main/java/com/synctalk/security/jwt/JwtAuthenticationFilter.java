@@ -3,6 +3,7 @@ package com.synctalk.security.jwt;
 import com.synctalk.security.auth.AppUserDetailsService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
 
 /**
  * Author: Shankar Chakraborty
@@ -29,42 +32,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AppUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
-        try {
-            String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-            if (header != null && header.startsWith("Bearer ")) {
-                try {
-                    String token = header.substring("Bearer ".length());
-                    Claims claims = jwtService.parse(token);
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-                    if (jwtService.getTokenType(claims) != JwtTokenType.ACCESS) {
-                        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                        return;
-                    }
+        if (header != null && header.startsWith("Bearer ")) {
+            try {
+                String token = header.substring("Bearer ".length());
+                Claims claims = jwtService.parse(token);
 
-                    String username = claims.getSubject();
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                    var authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                } catch (Exception ex) {
-                    SecurityContextHolder.clearContext();
+                if (jwtService.getTokenType(claims) != JwtTokenType.ACCESS) {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     return;
                 }
-            }
 
-            filterChain.doFilter(request, response);
-        } catch (Exception ex) {
-            SecurityContextHolder.clearContext();
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                String username = claims.getSubject();
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                var authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (Exception ex) {
+                SecurityContextHolder.clearContext();
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return;
+            }
         }
+
+        filterChain.doFilter(request, response);
+
     }
 }
