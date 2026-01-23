@@ -3,8 +3,7 @@ package com.synctalk.persistence.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -19,6 +18,9 @@ import java.time.Instant;
 @Table(name = "groups")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GroupEntity {
 
     @Id

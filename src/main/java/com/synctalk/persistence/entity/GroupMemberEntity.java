@@ -1,8 +1,7 @@
 package com.synctalk.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -17,12 +16,14 @@ import java.time.Instant;
         uniqueConstraints = @UniqueConstraint(columnNames = {"group_id", "user_id"}))
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class GroupMemberEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     private String groupId;
     private String userId;
